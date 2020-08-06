@@ -20,28 +20,4 @@ export class TenantService {
   async createOne(dto: CreateTenantDto): Promise<Tenant> {
     return this.tenantModel.create(dto);
   }
-
-  async tenantMoved(event: any): Promise<Tenant> {
-    // kick old tenant out of flat
-    await this.tenantModel.findOneAndUpdate(
-      { flatId: event.flatId },
-      {
-        flatId: null,
-      },
-    );
-    // new tenant move in
-    await this.tenantModel
-      .findByIdAndUpdate(
-        {
-          _id: event.tenantId,
-        },
-        {
-          flatId: event.flatId,
-          moveDate: event.moveDate,
-        },
-      )
-      .exec();
-
-    return this.tenantModel.findById(event.tenantId).exec();
-  }
 }

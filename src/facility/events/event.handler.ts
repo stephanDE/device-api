@@ -8,6 +8,7 @@ import { Event } from './event';
 import { FlatEnrolledEvent } from './flatEnrolled.event';
 import { FacilityEnrolledEvent } from './facilityEnrolled.event';
 import { TenantMovedEvent } from 'src/tenant/events/tenantMoved.event';
+import { RoomEnrolledEvent } from './roomEnrolled.event';
 
 @Injectable()
 export class EventHandler {
@@ -26,8 +27,8 @@ export class EventHandler {
         return this.handleFlatEnrolledEvent(event as FlatEnrolledEvent);
       }
 
-      case 'TenantMoved': {
-        return this.handleTenantMovedEvent(event as FlatEnrolledEvent);
+      case 'RoomEnrolled': {
+        return this.handleRoomEnrolledEvent(event as RoomEnrolledEvent);
       }
 
       default:
@@ -53,9 +54,9 @@ export class EventHandler {
     return this.facilityService.enrollFlat(event);
   }
 
-  private async handleTenantMovedEvent(
-    event: TenantMovedEvent,
+  private async handleRoomEnrolledEvent(
+    event: RoomEnrolledEvent,
   ): Promise<Facility> {
-    return this.facilityService.tenantMoved(event);
+    return this.facilityService.enrollRoom(event);
   }
 }

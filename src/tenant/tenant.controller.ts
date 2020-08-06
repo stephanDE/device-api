@@ -74,25 +74,6 @@ export class TenantController {
     return tenant;
   }
 
-  @Patch('')
-  @Roles('Move')
-  @UsePipes(ValidationPipe)
-  async move(@Body() dto: MoveTenantDto): Promise<Tenant> {
-    const tenant: Tenant = await this.tenantService.tenantMoved(dto);
-
-    const event = {
-      id: uuid(),
-      type: 'event',
-      action: 'TenantMoved',
-      timestamp: Date.now(),
-      data: tenant,
-    };
-
-    this.kafkaClient.emit(`${this.config.kafka.prefix}-tenant-event`, event);
-
-    return tenant;
-  }
-
   @KafkaTopic(`tenant-command`) async onCommand(
     @Cmd() command: Command,
   ): Promise<void> {

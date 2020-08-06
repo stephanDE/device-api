@@ -15,8 +15,6 @@ export class CommandHandler {
     switch (command.action) {
       case 'CreateTenant':
         return this.handleCreateTenantCommand(command as CreateTenantCommand);
-      case 'MoveTenant':
-        return this.handleMoveTenantCommand(command as MoveTenantCommand);
       default:
         throw new RpcException(`Unsupported command action: ${command.action}`);
     }
@@ -24,9 +22,5 @@ export class CommandHandler {
 
   private async handleCreateTenantCommand(command: CreateTenantCommand) {
     return this.tenantService.createOne(command.data);
-  }
-
-  private async handleMoveTenantCommand(command: MoveTenantCommand) {
-    return this.tenantService.tenantMoved(command.data);
   }
 }

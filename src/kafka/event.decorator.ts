@@ -7,7 +7,7 @@ import { FloorEnrolledEvent } from '../facility/events/floorEnrolled.event';
 import { Event } from '../facility/events/event';
 import { FlatEnrolledEvent } from 'src/facility/events/flatEnrolled.event';
 import { FacilityEnrolledEvent } from 'src/facility/events/facilityEnrolled.event';
-import { TenantMovedEvent } from 'src/tenant/events/tenantMoved.event';
+import { RoomEnrolledEvent } from 'src/facility/events/roomEnrolled.event';
 
 export const Evt = createParamDecorator(
   async (data: unknown, ctx: ExecutionContext): Promise<Event> => {
@@ -36,8 +36,8 @@ export const Evt = createParamDecorator(
       case 'FlatEnrolled':
         event = plainToClass(FlatEnrolledEvent, value);
         break;
-      case 'TenantMoved':
-        event = plainToClass(TenantMovedEvent, value);
+      case 'RoomEnrolled':
+        event = plainToClass(RoomEnrolledEvent, value);
         break;
       default:
         throw new RpcException(`Unknown event action: ${value.action}`);

@@ -26,6 +26,6 @@ export class EventHandler {
   private async handleTenantMovedEvent(
     event: TenantMovedEvent,
   ): Promise<Facility> {
-    return this.facilityService.tenantMoved(event);
+    return null;
   }
 }
