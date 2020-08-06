@@ -51,6 +51,14 @@ export class DeviceService {
     return this.deviceModel.findById(id).exec();
   }
 
+  async findAllFraunhofer(): Promise<FraunhoferDevice[]> {
+    return this.fraunhoferDeviceModel.find().exec();
+  }
+
+  async findOneFraunhofer(id: string): Promise<FraunhoferDevice> {
+    return this.fraunhoferDeviceModel.findById(id).exec();
+  }
+
   async createOne(dto: CreateDeviceDto): Promise<Device> {
     const device = await this.deviceModel.create(dto);
 

@@ -9,6 +9,7 @@ import { CommandHandler } from './commands/command.handler';
 import { EventHandler } from './events/event.handler';
 import { FacilityModule } from 'src/facility/facility.module';
 import { FraunhoferDeviceSchema } from './fraunhofer.device.schema';
+import { FraunhoferDeviceController } from './fraunhofer.device.controller';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { FraunhoferDeviceSchema } from './fraunhofer.device.schema';
     LoggingModule,
     FacilityModule,
   ],
-  controllers: [DeviceController],
+  controllers: [DeviceController, FraunhoferDeviceController],
   providers: [DeviceService, CommandHandler, EventHandler],
 })
 export class DeviceModule {}
