@@ -10,6 +10,10 @@ import { RoomEnrolledEvent } from './events/roomEnrolled.event';
 
 @Injectable()
 export class FacilityService {
+  constructor(
+    @InjectModel('Facilities') private facilityModel: Model<Facility>,
+  ) {}
+
   async enrollFlat(event: FlatEnrolledEvent): Promise<Facility> {
     const flat = event.data;
 
@@ -88,9 +92,6 @@ export class FacilityService {
       floors: [],
     });
   }
-  constructor(
-    @InjectModel('Facilities') private facilityModel: Model<Facility>,
-  ) {}
 
   async findAll(): Promise<Facility[]> {
     return this.facilityModel.find().exec();

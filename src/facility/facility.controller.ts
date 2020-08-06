@@ -47,11 +47,4 @@ export class FacilityController {
     await this.eventHandler.handleEvent(event);
     return;
   }
-
-  @KafkaTopic('tenant-event') async onTenantEvent(
-    @Evt() event: Event,
-  ): Promise<void> {
-    await this.eventHandler.handleEvent(event);
-    return;
-  }
 }

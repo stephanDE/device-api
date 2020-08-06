@@ -12,19 +12,6 @@ export class EventHandler {
   constructor(private facilityService: FacilityService) {}
 
   async handleEvent(event: Event): Promise<any> {
-    switch (event.action) {
-      case 'TenantMoved': {
-        //return this.handleTenantMovedEvent(event as TenantMovedEvent);
-      }
-
-      default:
-        throw new RpcException(`Unsupported event action: ${event.action}`);
-    }
+    throw new RpcException(`Unsupported event action: ${event.action}`);
   }
-
-  /*private async handleTenantMovedEvent(
-    event: TenantMovedEvent,
-  ): Promise<Facility> {
-    return null;
-  }*/
 }

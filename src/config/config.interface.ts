@@ -4,6 +4,7 @@ export interface Config {
   mongo?: MongoConfig;
   auth?: AuthConfig;
   kafka?: KafkaConfig;
+  deviceService: DeviceService;
 }
 
 export interface AuthConfig {
@@ -25,4 +26,9 @@ export interface KafkaConfig {
   clientId?: string;
   prefix?: string;
   brokerUris?: string[];
+}
+
+export interface DeviceService {
+  username?: string;
+  password?: string;
 }

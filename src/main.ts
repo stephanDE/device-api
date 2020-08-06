@@ -4,6 +4,8 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { ConfigService } from './config/config.service';
 import { LoggingService } from './logging/logging.service';
+import { DeviceService } from './device/device.service';
+import { interval } from 'rxjs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -35,6 +37,13 @@ async function bootstrap() {
   await app.listen(config.port);
 
   logger.log(`Facility service running on port ${config.port}`);
-  logger.warn('servus du da');
+  logger.warn('Fetching Fraunhofer Devices');
+
+  const deviceService: DeviceService = app.get(DeviceService);
+  deviceService.fetchFraunhoferData();
+
+  interval(20000).subscribe(val => {
+    deviceService.fetchFraunhoferData();
+  });
 }
 bootstrap();

@@ -12,14 +12,14 @@ export class CommandHandler {
 
   async handler(command: Command): Promise<Device> {
     switch (command.action) {
-      case 'CreateTenant':
-        return this.handleCreateTenantCommand(command as CreateDeviceCommand);
+      case 'CreateDevice':
+        return this.handleCreateDeviceCommand(command as CreateDeviceCommand);
       default:
         throw new RpcException(`Unsupported command action: ${command.action}`);
     }
   }
 
-  private async handleCreateTenantCommand(command: CreateDeviceCommand) {
+  private async handleCreateDeviceCommand(command: CreateDeviceCommand) {
     return this.deviceService.createOne(command.data);
   }
 }

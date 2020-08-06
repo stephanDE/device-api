@@ -3,6 +3,7 @@ import {
   MongoConfig,
   KafkaConfig,
   AuthConfig,
+  DeviceService,
 } from './config.interface';
 
 export class ConfigService {
@@ -48,12 +49,18 @@ export class ConfigService {
     const kafkaPort = process.env.KAFKA_PORT || '9093';
     kafka.brokerUris = [`${kafkaHost}:${kafkaPort}`];
 
+    const deviceService: DeviceService = {};
+    deviceService.username = process.env.DEVICE_SERVICE_USER || 'Stephan';
+    deviceService.password =
+      process.env.DEVICE_SERVICE_PASSWORD || 'ibayfrteqgyv';
+
     this.config = {
       port: +process.env.PORT || 3000,
       prefix: process.env.PREFIX || 'api',
       mongo,
       auth,
       kafka,
+      deviceService,
     };
   }
 }

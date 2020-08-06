@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
+import { Injectable, Inject } from '@nestjs/common';
+import { RpcException, ClientKafka } from '@nestjs/microservices';
 import { FloorEnrolledEvent } from './floorEnrolled.event';
 
 import { FacilityService } from '../facility.service';
@@ -8,10 +8,17 @@ import { Event } from './event';
 import { FlatEnrolledEvent } from './flatEnrolled.event';
 import { FacilityEnrolledEvent } from './facilityEnrolled.event';
 import { RoomEnrolledEvent } from './roomEnrolled.event';
+import { Config } from 'src/config/config.interface';
+import { Command } from 'src/device/commands/command';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class EventHandler {
-  constructor(private facilityService: FacilityService) {}
+  constructor(
+    private facilityService: FacilityService,
+    @Inject('KAFKA_SERVICE') private kafkaClient: ClientKafka,
+    @Inject('CONFIG') private config: Config,
+  ) {}
 
   async handleEvent(event: Event): Promise<any> {
     switch (event.action) {
@@ -56,6 +63,17 @@ export class EventHandler {
   private async handleRoomEnrolledEvent(
     event: RoomEnrolledEvent,
   ): Promise<Facility> {
+    this.kafkaClient.emit(`${this.config.kafka.prefix}-device-command`, {
+      id: uuid(),
+      action: 'CreateDevice',
+      type: 'Command',
+      timestamp: Date.now(),
+      data: {
+        name: `device-${event.data.roomId}`,
+        roomId: event.data.roomId,
+      },
+    } as Command);
+
     return this.facilityService.enrollRoom(event);
   }
 }

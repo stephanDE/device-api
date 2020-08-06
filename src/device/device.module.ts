@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { DeviceController } from './device.controller';
@@ -8,6 +8,7 @@ import { DeviceService } from './device.service';
 import { CommandHandler } from './commands/command.handler';
 import { EventHandler } from './events/event.handler';
 import { FacilityModule } from 'src/facility/facility.module';
+import { FraunhoferDeviceSchema } from './fraunhofer.device.schema';
 
 @Module({
   imports: [
@@ -16,7 +17,12 @@ import { FacilityModule } from 'src/facility/facility.module';
         name: 'Device',
         schema: DeviceSchema,
       },
+      {
+        name: 'FraunhoferDevice',
+        schema: FraunhoferDeviceSchema,
+      },
     ]),
+    HttpModule,
     LoggingModule,
     FacilityModule,
   ],
