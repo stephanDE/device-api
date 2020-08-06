@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenant-api-service
+  namespace: dev
+spec:
+  selector:
+    app: tenant-api-service
+  ports:
+    - port: 3000
+      targetPort: 3000
+      name: tenant-api-service
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-api-service
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tenant-api-service
+  template:
+    metadata:
+      labels:
+        app: tenant-api-service
+    spec:
+      imagePullSecrets:
+        - name: pipeline-docker-registry
+      containers:
+        - name: tenant-api-service
+          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          env:
+            - name: KAFKA_PREFIX
+              value: dev
+            - name: KAFKA_HOST
+              value: kafka.kafka
+            - name: KAFKA_PORT
+              value: "9094"
+
+          envFrom:
+            - secretRef:
+                name: tenant-api-dev
+                optional: false
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tenant-api
+  namespace: dev
+spec:
+  rules:
+    - host: tenant-api.dev.116.203.237.159.xip.io
+      http:
+        paths:
+          - backend:
+              serviceName: tenant-api-service
+              servicePort: 3000
+            path: /api
+  tls:
+    - hosts:
+        - tenant-api.dev.116.203.237.159.xip.io
