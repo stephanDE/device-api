@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 
-import { TenantService } from '../tenant.service';
-import { Tenant } from '../tenant.schema';
+import { DeviceService } from '../device.service';
+import { Device } from '../device.schema';
 import { Event } from './event';
-import { TenantMovedEvent } from './tenantMoved.event';
 import { FacilityService } from 'src/facility/facility.service';
 import { Facility } from 'src/facility/facility.schema';
 
@@ -15,7 +14,7 @@ export class EventHandler {
   async handleEvent(event: Event): Promise<any> {
     switch (event.action) {
       case 'TenantMoved': {
-        return this.handleTenantMovedEvent(event as TenantMovedEvent);
+        //return this.handleTenantMovedEvent(event as TenantMovedEvent);
       }
 
       default:
@@ -23,9 +22,9 @@ export class EventHandler {
     }
   }
 
-  private async handleTenantMovedEvent(
+  /*private async handleTenantMovedEvent(
     event: TenantMovedEvent,
   ): Promise<Facility> {
     return null;
-  }
+  }*/
 }

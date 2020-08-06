@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { TenantController } from './tenant.controller';
-import { TenantSchema } from './tenant.schema';
+import { DeviceController } from './device.controller';
+import { DeviceSchema } from './device.schema';
 import { LoggingModule } from '../logging/logging.module';
-import { TenantService } from './tenant.service';
+import { DeviceService } from './device.service';
 import { CommandHandler } from './commands/command.handler';
 import { EventHandler } from './events/event.handler';
 import { FacilityModule } from 'src/facility/facility.module';
@@ -13,14 +13,14 @@ import { FacilityModule } from 'src/facility/facility.module';
   imports: [
     MongooseModule.forFeature([
       {
-        name: 'Tenant',
-        schema: TenantSchema,
+        name: 'Device',
+        schema: DeviceSchema,
       },
     ]),
     LoggingModule,
     FacilityModule,
   ],
-  controllers: [TenantController],
-  providers: [TenantService, CommandHandler, EventHandler],
+  controllers: [DeviceController],
+  providers: [DeviceService, CommandHandler, EventHandler],
 })
-export class TenantModule {}
+export class DeviceModule {}

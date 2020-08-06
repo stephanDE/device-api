@@ -26,19 +26,17 @@ import { Config } from '../config/config.interface';
 import { CommandHandler } from './commands/command.handler';
 import { EventHandler } from './events/event.handler';
 import { Evt } from '../kafka/event.decorator';
-import { Tenant } from './tenant.schema';
-import { TenantService } from './tenant.service';
-import { CreateTenantDto } from './dto/createTenant.dto';
-import { MoveTenantCommand } from './commands/moveTenant.command';
-import { MoveTenantDto } from './dto/moveTenant.dto';
+import { Device } from './device.schema';
+import { DeviceService } from './device.service';
+import { CreateDeviceDto } from './dto/createDevice.dto';
 
-@Controller('tenant')
+@Controller('device')
 @UseGuards(RoleGuard)
 @UseFilters(ExceptionFilter)
-export class TenantController {
+export class DeviceController {
   constructor(
     private eventHandler: EventHandler,
-    private tenantService: TenantService,
+    private deviceService: DeviceService,
     @Inject('KAFKA_SERVICE') private kafkaClient: ClientKafka,
     @Inject('CONFIG') private config: Config,
     private commandHandler: CommandHandler,
@@ -46,53 +44,53 @@ export class TenantController {
 
   @Roles('Read')
   @Get('')
-  async getAll(): Promise<Tenant[]> {
-    return this.tenantService.findAll();
+  async getAll(): Promise<Device[]> {
+    return this.deviceService.findAll();
   }
 
   @Get('/:id')
   async getOne(@Param('id', new MongoPipe()) id: string) {
-    return this.tenantService.findOne(id);
+    return this.deviceService.findOne(id);
   }
 
   @Post('')
   @Roles('Create')
   @UsePipes(ValidationPipe)
-  async createOne(@Body() dto: CreateTenantDto): Promise<Tenant> {
-    const tenant: Tenant = await this.tenantService.createOne(dto);
+  async createOne(@Body() dto: CreateDeviceDto): Promise<Device> {
+    const device: Device = await this.deviceService.createOne(dto);
 
     const event = {
       id: uuid(),
       type: 'event',
-      action: 'TenantCreated',
+      action: 'DeviceCreated',
       timestamp: Date.now(),
-      data: tenant,
+      data: device,
     };
 
-    this.kafkaClient.emit(`${this.config.kafka.prefix}-tenant-event`, event);
+    this.kafkaClient.emit(`${this.config.kafka.prefix}-device-event`, event);
 
-    return tenant;
+    return device;
   }
 
-  @KafkaTopic(`tenant-command`) async onCommand(
+  @KafkaTopic(`device-command`) async onCommand(
     @Cmd() command: Command,
   ): Promise<void> {
-    const tenant: Tenant = await this.commandHandler.handler(command);
+    const device: Device = await this.commandHandler.handler(command);
 
     const event = {
       id: uuid(),
       type: 'event',
-      action: command.action === 'MoveTenant' ? 'TenantMoved' : 'TenantCreated',
+      action: 'DeviceCreated',
       timestamp: Date.now(),
-      data: tenant,
+      data: device,
     };
 
-    this.kafkaClient.emit(`${this.config.kafka.prefix}-tenant-event`, event);
+    this.kafkaClient.emit(`${this.config.kafka.prefix}-device-event`, event);
 
     return;
   }
 
-  @KafkaTopic('tenant-event') async onTenantEvent(
+  @KafkaTopic('device-event') async ondeviceEvent(
     @Evt() event: Event,
   ): Promise<void> {
     await this.eventHandler.handleEvent(event);

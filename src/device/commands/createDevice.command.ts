@@ -3,23 +3,19 @@ import { Type } from 'class-transformer';
 
 import { Command } from './command';
 
-export class MoveTenant {
+export class Device {
   @IsNotEmpty()
   @IsString()
-  readonly tenantId;
+  readonly name;
 
   @IsNotEmpty()
   @IsString()
-  readonly flatId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  readonly moveDate: string;
+  readonly roomId: string;
 }
 
-export class MoveTenantCommand extends Command {
+export class CreateDeviceCommand extends Command {
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => MoveTenant)
-  readonly data: MoveTenant;
+  @Type(() => Device)
+  readonly data: Device;
 }

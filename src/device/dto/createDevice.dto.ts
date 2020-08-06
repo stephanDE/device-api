@@ -1,10 +1,11 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 
-export class CreateTenantDto {
+export class CreateDeviceDto {
   @IsNotEmpty()
   @IsString()
   readonly name: string;
 
-  readonly flatId: string;
-  readonly moveDate: string;
+  @IsNotEmpty()
+  @IsString()
+  readonly roomId: string;
 }

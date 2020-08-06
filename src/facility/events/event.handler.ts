@@ -7,7 +7,6 @@ import { Facility } from '../facility.schema';
 import { Event } from './event';
 import { FlatEnrolledEvent } from './flatEnrolled.event';
 import { FacilityEnrolledEvent } from './facilityEnrolled.event';
-import { TenantMovedEvent } from 'src/tenant/events/tenantMoved.event';
 import { RoomEnrolledEvent } from './roomEnrolled.event';
 
 @Injectable()
