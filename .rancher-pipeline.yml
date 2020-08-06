@@ -13,7 +13,7 @@ stages:
       - publishImageConfig:
           dockerfilePath: ./Dockerfile
           buildContext: .
-          tag: awcloud/tenantapi:${CICD_EXECUTION_SEQUENCE}
+          tag: awcloud/deviceapi:${CICD_EXECUTION_SEQUENCE}
   - name: Deploy
     steps:
       - applyYamlConfig:

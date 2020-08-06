@@ -1,37 +1,37 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tenant-api-service
+  name: device-api-service
   namespace: stag
 spec:
   selector:
-    app: tenant-api-service
+    app: device-api-service
   ports:
     - port: 3000
       targetPort: 3000
-      name: tenant-api-service
+      name: device-api-service
       protocol: TCP
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tenant-api-service
+  name: device-api-service
   namespace: stag
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tenant-api-service
+      app: device-api-service
   template:
     metadata:
       labels:
-        app: tenant-api-service
+        app: device-api-service
     spec:
       imagePullSecrets:
         - name: pipeline-docker-registry
       containers:
-        - name: tenant-api-service
+        - name: device-api-service
           image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
           env:
             - name: KAFKA_PREFIX
@@ -42,23 +42,23 @@ spec:
               value: "9094"
           envFrom:
             - secretRef:
-                name: tenant-api-stag
+                name: device-api-stag
                 optional: false
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: tenant-api
+  name: device-api
   namespace: stag
 spec:
   rules:
-    - host: tenant-api.testing.116.203.237.159.xip.io
+    - host: device-api.testing.116.203.237.159.xip.io
       http:
         paths:
           - backend:
-              serviceName: tenant-api-service
+              serviceName: device-api-service
               servicePort: 3000
             path: /api
   tls:
     - hosts:
-        - tenant-api.testing.116.203.237.159.xip.io
+        - device-api.testing.116.203.237.159.xip.io
