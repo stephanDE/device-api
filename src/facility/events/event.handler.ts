@@ -66,11 +66,11 @@ export class EventHandler {
     this.kafkaClient.emit(`${this.config.kafka.prefix}-device-command`, {
       id: uuid(),
       action: 'CreateDevice',
-      type: 'Command',
+      type: 'command',
       timestamp: Date.now(),
       data: {
-        name: `device-${event.data.roomId}`,
-        roomId: event.data.roomId,
+        name: `device-${event.data._id}`,
+        roomId: event.data._id,
       },
     } as Command);
 
