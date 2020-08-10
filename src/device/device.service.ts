@@ -48,7 +48,7 @@ export class DeviceService {
   }
 
   async findOne(id: string): Promise<Device> {
-    return this.deviceModel.findById(id).exec();
+    return this.deviceModel.findOne({ roomId: id }).exec();
   }
 
   async findAllFraunhofer(): Promise<FraunhoferDevice[]> {
