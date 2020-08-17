@@ -20,8 +20,8 @@ stages:
           path: ./deploy/deployment-dev.yaml
       - applyYamlConfig:
           path: ./deploy/deployment-stag.yaml
-        #- applyYamlConfig:
-        #    path: ./deploy/deployment-prod.yaml
+      - applyYamlConfig:
+          path: ./deploy/deployment-prod.yaml
         when:
           branch: master
           event: push
