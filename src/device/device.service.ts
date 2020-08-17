@@ -1,4 +1,4 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable, HttpService, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -7,8 +7,11 @@ import { CreateDeviceDto } from './dto/createDevice.dto';
 import { FraunhoferDevice } from './fraunhofer.device.schema';
 import { ConfigService } from 'src/config/config.service';
 import { map } from 'rxjs/operators';
-import { map as lodashMap } from 'lodash';
+import { map as lodashMap, uniqBy } from 'lodash';
 import { of } from 'rxjs';
+import { ClientKafka } from '@nestjs/microservices';
+import { Config } from 'src/config/config.interface';
+import { v4 as uuid } from 'uuid';
 
 const FRAUNHOFER_FLATS = [
   'SD0',
@@ -39,6 +42,8 @@ export class DeviceService {
     @InjectModel('Device') private deviceModel: Model<Device>,
     @InjectModel('FraunhoferDevice')
     private fraunhoferDeviceModel: Model<FraunhoferDevice>,
+    @Inject('KAFKA_SERVICE') private kafkaClient: ClientKafka,
+    @Inject('CONFIG') private config: Config,
     private configService: ConfigService,
     private httpService: HttpService,
   ) {}
@@ -106,29 +111,63 @@ export class DeviceService {
         if (exist) {
           console.log('UPDATING DEVICE', device.roomNr, flat);
 
-          this.fraunhoferDeviceModel
+          const deviceInDB = await this.fraunhoferDeviceModel.findOne({
+            fraunhoferFlatId: flat,
+            fraunhoferRoomNr: device.roomNr,
+          });
+
+          const updated = await this.fraunhoferDeviceModel
             .findOneAndUpdate(
               {
                 fraunhoferRoomNr: device.roomNr,
                 fraunhoferFlatId: flat,
               },
               {
-                meterValue: device.meterValue,
+                meterValue: uniqBy(
+                  [device.meterValue, ...deviceInDB.meterValue],
+                  'timestamp',
+                ),
                 temperature: device.temperature,
               },
             )
             .exec();
+
+          const event = {
+            id: uuid(),
+            type: 'event',
+            action: 'FraunhoferDeviceUpdated',
+            timestamp: Date.now(),
+            data: updated,
+          };
+
+          this.kafkaClient.emit(
+            `${this.config.kafka.prefix}-device-event`,
+            event,
+          );
         } else {
           console.log('CREATING DEVICE', device.roomNr, flat);
 
-          this.fraunhoferDeviceModel.create({
+          const createdDevice = await this.fraunhoferDeviceModel.create({
             fraunhoferRoomNr: device.roomNr,
             fraunhoferFlatId: flat,
-            meterValue: device.meterValue,
+            meterValue: [device.meterValue],
             temperature: device.temperature,
             roomId: null,
             deviceId: null,
           });
+
+          const event = {
+            id: uuid(),
+            type: 'event',
+            action: 'FraunhoferDeviceCreated',
+            timestamp: Date.now(),
+            data: createdDevice,
+          };
+
+          this.kafkaClient.emit(
+            `${this.config.kafka.prefix}-device-event`,
+            event,
+          );
         }
       });
     });
