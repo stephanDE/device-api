@@ -31,7 +31,7 @@ export class CommandHandler {
     const event = {
       id: uuid(),
       type: 'event',
-      action: 'FraunhoferDeviceUpdated',
+      action: 'DeviceUpdated',
       timestamp: Date.now(),
       data: device,
     };

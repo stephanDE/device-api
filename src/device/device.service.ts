@@ -82,6 +82,8 @@ export class DeviceService {
       data: updated,
     };
 
+    console.log('fraunhofer is jetzt', JSON.stringify(updated));
+
     this.kafkaClient.emit(`${this.config.kafka.prefix}-device-event`, event);
 
     return of(device).toPromise();
