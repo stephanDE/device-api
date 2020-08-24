@@ -42,7 +42,7 @@ async function bootstrap() {
   const deviceService: DeviceService = app.get(DeviceService);
   deviceService.fetchFraunhoferData();
 
-  interval(20 * 10000).subscribe(val => {
+  interval(200 * 10000).subscribe(val => {
     deviceService.fetchFraunhoferData();
   });
 }

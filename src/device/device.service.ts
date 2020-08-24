@@ -22,7 +22,7 @@ const FRAUNHOFER_FLATS = [
   'SD5',
   'SD6',
   'SD7',
-  'SD8',
+  /*  'SD8',
   'SD9',
   'SD10',
   'SD11',
@@ -33,7 +33,7 @@ const FRAUNHOFER_FLATS = [
   'SD16',
   'SD17',
   'SD18',
-  'SD19',
+  'SD19',*/
 ];
 
 @Injectable()
