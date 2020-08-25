@@ -67,6 +67,8 @@ export class DeviceService {
   async createOne(dto: CreateDeviceDto): Promise<Device> {
     const device = await this.deviceModel.create(dto);
 
+    console.log('erstelltes device', device);
+
     const updated = await this.fraunhoferDeviceModel
       .findOneAndUpdate(
         { roomId: null },
