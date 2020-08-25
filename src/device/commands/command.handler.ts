@@ -28,6 +28,7 @@ export class CommandHandler {
 
   private async handleCreateDeviceCommand(command: CreateDeviceCommand) {
     const device = await this.deviceService.createOne(command.data);
+    /*
     const event = {
       id: uuid(),
       type: 'event',
@@ -37,7 +38,7 @@ export class CommandHandler {
     };
 
     this.kafkaClient.emit(`${this.config.kafka.prefix}-device-event`, event);
-
+    */
     return device;
   }
 }
