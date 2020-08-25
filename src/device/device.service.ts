@@ -67,13 +67,15 @@ export class DeviceService {
   async createOne(dto: CreateDeviceDto): Promise<Device> {
     const device = await this.deviceModel.create(dto);
 
-    console.log('erstelltes device', device);
-
-    const updated = await this.fraunhoferDeviceModel
+    await this.fraunhoferDeviceModel
       .findOneAndUpdate(
         { roomId: null },
         { roomId: device.roomId, deviceId: device._id },
       )
+      .exec();
+
+    const updated = await this.fraunhoferDeviceModel
+      .findOne({ roomId: device.roomId })
       .exec();
 
     const event = {
@@ -83,8 +85,6 @@ export class DeviceService {
       timestamp: Date.now(),
       data: updated,
     };
-
-    console.log('fraunhofer is jetzt', JSON.stringify(updated));
 
     this.kafkaClient.emit(`${this.config.kafka.prefix}-device-event`, event);
 
