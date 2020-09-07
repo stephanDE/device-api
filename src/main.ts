@@ -37,7 +37,7 @@ async function bootstrap() {
   await app.listen(config.port);
 
   logger.log(`Facility service running on port ${config.port}`);
-  logger.warn('Fetching Fraunhofer Devices');
+  logger.warn('Fetching Fraunhofer Devicces');
 
   const deviceService: DeviceService = app.get(DeviceService);
   deviceService.fetchFraunhoferData();
